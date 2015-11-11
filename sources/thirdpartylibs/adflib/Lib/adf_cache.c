@@ -88,13 +88,21 @@ struct List* adfGetDirEntCache(struct Volume *vol, SECTNUM dir, BOOL recurs)
 
             /* converts a cache entry into a dir entry */
             entry->type = (int)caEntry.type;
-            entry->name = strdup(caEntry.name);
+#if defined (WIN32)
+            entry->name = _strdup(caEntry.name);
+#else
+	        entry->name =  strdup(caEntry.name);
+#endif			
             if (entry->name==NULL) {
                 free(entry); adfFreeDirList(head);
                 return NULL;
             }
             entry->sector = caEntry.header;
-            entry->comment = strdup(caEntry.comm);
+#if defined (WIN32)
+            entry->comment = _strdup(caEntry.comm);
+#else
+	        entry->comment =  strdup(caEntry.comm);
+#endif				
             if (entry->comment==NULL) {
                 free(entry->name); adfFreeDirList(head);
                 return NULL;
